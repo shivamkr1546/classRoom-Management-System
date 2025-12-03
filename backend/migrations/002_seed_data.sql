@@ -1,13 +1,11 @@
 -- Seed data for development and testing
 
-USE classroom_db;
-
 -- Insert admin user (password: admin123)
 -- Password hash generated with bcrypt (cost 12): admin123
 INSERT INTO users (name, email, password_hash, role) VALUES
-('Admin User', 'admin@classroom.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewYfTDUcXVMK.WMe', 'admin'),
-('John Doe', 'john@classroom.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewYfTDUcXVMK.WMe', 'instructor'),
-('Jane Smith', 'jane@classroom.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewYfTDUcXVMK.WMe', 'coordinator');
+('Admin User', 'admin@classroom.com', '$2b$12$NY3pFsqrFQgje4rfZTshnusc4NRzpXqBeI6niCb3EX1pB1VpFAmGi', 'admin'),
+('John Doe', 'john@classroom.com', '$2b$12$NY3pFsqrFQgje4rfZTshnusc4NRzpXqBeI6niCb3EX1pB1VpFAmGi', 'instructor'),
+('Jane Smith', 'jane@classroom.com', '$2b$12$NY3pFsqrFQgje4rfZTshnusc4NRzpXqBeI6niCb3EX1pB1VpFAmGi', 'coordinator');
 
 -- Insert sample rooms
 INSERT INTO rooms (code, name, type, capacity, location) VALUES

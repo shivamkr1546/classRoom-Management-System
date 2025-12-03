@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: classroom_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 --silent; then
+              echo "MySQL is ready"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 2
+          done
+
+      - name: Run database migrations
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USER: root
+          DB_PASSWORD: password
+          DB_NAME: classroom_db
+        run: npm run migrate
+
+      - name: Start server in background
+        env:
+          NODE_ENV: test
+          DB_HOST: 127.0.0.1
+          DB_USER: root
+          DB_PASSWORD: password
+          DB_NAME: classroom_db
+          JWT_SECRET: test_secret_key
+          JWT_REFRESH_SECRET: test_refresh_secret_key
+        run: |
+          node server.js &
+          sleep 5
+
+      - name: Run Phase 2 Tests
+        env:
+          API_URL: http://localhost:5000
+        run: node scripts/test-phase2-apis.js
+
+      - name: Run Phase 3 Tests
+        env:
+          API_URL: http://localhost:5000
+        run: node scripts/test-phase3-apis.js
+
+      - name: Run Phase 4 Tests
+        env:
+          API_URL: http://localhost:5000
+        run: node scripts/test-phase4-apis.js
+
+      - name: Check test results
+        if: failure()
+        run: |
+          echo "Tests failed! Check the logs above for details."
+          exit 1

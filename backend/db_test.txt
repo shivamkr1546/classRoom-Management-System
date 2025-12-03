@@ -1,0 +1,29 @@
+🔍 Testing MySQL Connection...
+
+Configuration:
+  Host: localhost
+  Port: 3306
+  User: root
+  Password: ***
+  Database: classroom_db
+
+Step 1: Testing basic MySQL connection...
+✅ Connected to MySQL server!
+
+Step 2: Checking if database exists...
+✅ Database 'classroom_db' exists
+
+Available databases:
+  - classroom_db ← target
+  - information_schema
+  - mysql
+  - performance_schema
+  - sakila
+  - shivam
+  - sys
+  - world
+
+✅ Connection test PASSED
+   Your MySQL is running and accessible
+   You can now run: npm run migrate
+

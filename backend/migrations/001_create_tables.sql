@@ -1,11 +1,4 @@
--- Classroom Scheduling System - Database Schema
--- MySQL Database Creation and Table Definitions
-
--- Create database if not exists
-CREATE DATABASE IF NOT EXISTS classroom_db;
-USE classroom_db;
-
--- Drop tables if exist (for clean migration)
+-- Drop existing tables for clean re-run (order matters due to FKs)
 DROP TABLE IF EXISTS attendance;
 DROP TABLE IF EXISTS schedules;
 DROP TABLE IF EXISTS course_instructors;
@@ -14,7 +7,7 @@ DROP TABLE IF EXISTS courses;
 DROP TABLE IF EXISTS rooms;
 DROP TABLE IF EXISTS users;
 
--- Users table (admins, instructors, coordinators)
+
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(150) NOT NULL,
@@ -27,7 +20,6 @@ CREATE TABLE users (
   INDEX idx_role (role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Rooms table
 CREATE TABLE rooms (
   id INT AUTO_INCREMENT PRIMARY KEY,
   code VARCHAR(50) NOT NULL UNIQUE,
@@ -40,7 +32,6 @@ CREATE TABLE rooms (
   INDEX idx_type (type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Courses table
 CREATE TABLE courses (
   id INT AUTO_INCREMENT PRIMARY KEY,
   code VARCHAR(50) NOT NULL UNIQUE,
@@ -50,7 +41,6 @@ CREATE TABLE courses (
   INDEX idx_code (code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Course-Instructors junction table (many-to-many)
 CREATE TABLE course_instructors (
   id INT AUTO_INCREMENT PRIMARY KEY,
   course_id INT NOT NULL,
@@ -62,7 +52,6 @@ CREATE TABLE course_instructors (
   INDEX idx_instructor (instructor_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Students table
 CREATE TABLE students (
   id INT AUTO_INCREMENT PRIMARY KEY,
   roll_no VARCHAR(50) NOT NULL UNIQUE,
@@ -74,7 +63,6 @@ CREATE TABLE students (
   INDEX idx_class_label (class_label)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Schedules table (core scheduling data)
 CREATE TABLE schedules (
   id INT AUTO_INCREMENT PRIMARY KEY,
   room_id INT NOT NULL,
@@ -97,7 +85,6 @@ CREATE TABLE schedules (
   INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Attendance table
 CREATE TABLE attendance (
   id INT AUTO_INCREMENT PRIMARY KEY,
   student_id INT NOT NULL,
@@ -112,5 +99,4 @@ CREATE TABLE attendance (
   INDEX idx_student (student_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Success message
 SELECT 'Database schema created successfully!' AS Status;
